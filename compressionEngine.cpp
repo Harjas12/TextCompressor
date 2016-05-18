@@ -25,16 +25,26 @@ void createNodes(string text, priority_queue<node*, vector<node* >, compareNodes
 int getOccurancesAndRemoveAll(string &text, char c);
 void buildTree(priority_queue<node*, vector<node* >, compareNodes> &pq);
 char decode(node* root, vector<bool> bin);
+void buildConversionMap(node* root, map<char, vector<bool> > &converstionMap, vector<bool> &temp);
 
 int main()
 {
-	string text = "hello";
+	string text = "text";
 	priority_queue<node*, vector<node* >, compareNodes> pq;
 	createNodes(text, pq);
 	buildTree(pq);
 	node* root = pq.top();
-	vector<bool> bin = {true, false};
-	cout << decode(root, bin) << endl;
+	map<char, vector<bool> > converstionMap;
+	vector<bool> temp;
+	buildConversionMap(root, converstionMap, temp);
+	vector<bool> bin;
+	char printTem = 't';
+	bin = converstionMap[printTem];
+	cout << printTem << " : ";
+	int i;
+	for(i = 0; i < bin.size(); i++)
+		cout << bin[i];
+	cout << endl;
 	return 0;
 }
 void createNodes(string text, priority_queue<node*, vector<node* >, compareNodes> &pq)
@@ -95,4 +105,19 @@ char decode(node* root, vector<bool> bin)
 		}
 	}
 	return root->value;
+}
+void buildConversionMap(node* root, map<char, vector<bool> > &converstionMap, vector<bool> &temp)
+{
+	if(root->left != NULL)
+	{
+		temp.push_back(false);
+		buildConversionMap(root->left, converstionMap, temp);
+	}
+	if(root->right != NULL)
+	{
+		temp.push_back(true);
+		buildConversionMap(root->right, converstionMap, temp);
+	}
+	converstionMap.insert({root->value, temp});
+	temp.erase(temp.begin(), temp.end());
 }
